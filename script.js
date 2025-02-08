@@ -35,7 +35,7 @@ function create() {
   reels = [];
   for (let i = 0; i < 3; i++) {
     let randomSymbol = Phaser.Math.RND.pick(symbols);
-    let reel = this.add.image(this.cameras.main.centerX - 100 + i * 70, this.cameras.main.centerY - 30, randomSymbol).setScale(0.1);
+    let reel = this.add.image(this.cameras.main.centerX - 80 + i * 75, this.cameras.main.centerY + 30, randomSymbol).setScale(0.1);
     reel.setOrigin(0.5);
     reels.push(reel);
   }
@@ -91,9 +91,12 @@ function spinReels() {
   reels.forEach((reel, index) => {
     this.time.delayedCall(index * 100, () => {
       let tweensArray = [];
+      let originalY = reel.y;
+      let moveAmount = 15
+
       for (let cycle = 0; cycle < 9; cycle++) {
         tweensArray.push({
-          y: reel.y - 30,
+          y: originalY - moveAmount,
           ease: 'Quad.easeOut',
           duration: 100,
           onComplete: () => {
@@ -101,13 +104,14 @@ function spinReels() {
           }
         });
         tweensArray.push({
-          y: reel.y + 30,
+          y: originalY + moveAmount,
           ease: 'Quad.easeIn',
           duration: 100
         });
       }
+
       tweensArray.push({
-        y: reel.y - 30,
+        y: originalY - moveAmount,
         ease: 'Quad.easeOut',
         duration: 100,
         onComplete: () => {
@@ -115,7 +119,7 @@ function spinReels() {
         }
       });
       tweensArray.push({
-        y: reel.y + 30,
+        y: originalY,
         ease: 'Quad.easeIn',
         duration: 100
       });
