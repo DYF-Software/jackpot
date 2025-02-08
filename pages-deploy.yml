@@ -1,0 +1,31 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Ana branch'i izler (branch ismine göre değiştirilebilir)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install  # Eğer npm kullanılmıyorsa bu kısmı kaldırabilirsiniz
+
+    - name: Build Project
+      run: echo "No build step needed for this project"  # Eğer bir build süreci yoksa bunu kullanın
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: .  # Bu, yayınlanacak dosyaların bulunduğu dizini belirtir. Projenizin kök dizininde statik dosyalar varsa "." bırakabilirsiniz
