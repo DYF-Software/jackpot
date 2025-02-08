@@ -3,14 +3,18 @@ let spinning = false;
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: '100%',
+  height: '100%',
   backgroundColor: '#000',
   parent: 'game-container',
   scene: {
     preload: preload,
     create: create,
     update: update,
+  },
+  scale: {
+    mode: Phaser.Scale.RESIZE,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
   },
 };
 
@@ -24,18 +28,19 @@ function preload() {
 }
 
 function create() {
-  this.add.image(400, 300, 'machine').setScale(0.8);
-
+  const machine = this.add.image(this.cameras.main.centerX, this.cameras.main.centerY, 'machine').setScale(0.8);
+  
   let symbols = ['cherries', 'lemon', 'orange'];
 
   reels = [];
   for (let i = 0; i < 3; i++) {
     let randomSymbol = Phaser.Math.RND.pick(symbols);
-    let reel = this.add.image(325 + i * 70, 330, randomSymbol).setScale(0.1);
+    let reel = this.add.image(this.cameras.main.centerX - 100 + i * 70, this.cameras.main.centerY - 30, randomSymbol).setScale(0.1);
+    reel.setOrigin(0.5);
     reels.push(reel);
   }
 
-  this.startText = this.add.text(400, 550, 'Click to start game', {
+  this.startText = this.add.text(this.cameras.main.centerX, this.cameras.main.height - 50, 'Click to start game', {
     fontSize: '24px',
     fill: '#fff'
   }).setOrigin(0.5);
@@ -88,38 +93,38 @@ function spinReels() {
       let tweensArray = [];
       for (let cycle = 0; cycle < 9; cycle++) {
         tweensArray.push({
-          y: 320,
+          y: reel.y - 30,
           ease: 'Quad.easeOut',
-          duration: 80,
+          duration: 100,
           onComplete: () => {
             reel.setTexture(Phaser.Math.RND.pick(symbols));
           }
         });
         tweensArray.push({
-          y: 330,
+          y: reel.y + 30,
           ease: 'Quad.easeIn',
-          duration: 80
+          duration: 100
         });
       }
       tweensArray.push({
-        y: 320,
+        y: reel.y - 30,
         ease: 'Quad.easeOut',
-        duration: 80,
+        duration: 100,
         onComplete: () => {
           reel.setTexture('cherries');
         }
       });
       tweensArray.push({
-        y: 330,
+        y: reel.y + 30,
         ease: 'Quad.easeIn',
-        duration: 80
+        duration: 100
       });
 
       runTweenChain(this, reel, tweensArray, () => {
         completedReels++;
         if (completedReels === reels.length) {
           spinning = false;
-          this.add.text(400, 50, 'You Win!', {
+          this.add.text(this.cameras.main.centerX, 50, 'You Win!', {
             fontSize: '32px',
             fill: '#0f0'
           }).setOrigin(0.5);
